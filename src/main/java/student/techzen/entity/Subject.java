@@ -1,0 +1,39 @@
+package student.techzen.entity;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+import java.time.Instant;
+import java.util.UUID;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "subjects")
+public class Subject {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    UUID subject_id;
+
+    @Column(name = "subject_code", unique = true)
+    String subjectCode;
+
+    @Column(name = "subject_name", nullable = false)
+    String subjectName;
+
+    Integer credits;
+
+    @Column(name = "created_at", insertable = false, updatable = false)
+    Instant createdAt;
+
+    @Column(name = "updated_at", insertable = false, updatable = false)
+    Instant updatedAt;
+}
