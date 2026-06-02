@@ -20,9 +20,9 @@ import java.util.UUID;
 @Table(name = "majors")
 public class Major {
     @Id
-    UUID majorID;
-    String major_code;
-    String major_name;
+    UUID major_id;
+    String majorCode;
+    String majorName;
 
     @OneToMany(mappedBy = "major")
     List<Student> students;

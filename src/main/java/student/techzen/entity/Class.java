@@ -21,7 +21,7 @@ import java.util.UUID;
 @Table(name = "classes")
 public class Class {
     @Id
-    UUID id;
+    UUID class_id;
 
     @Column(name = "class_code", unique = true)
     String classCode;

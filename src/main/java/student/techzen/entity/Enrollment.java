@@ -50,7 +50,7 @@ public class Enrollment {
     @Column(name = "total_score", precision = 5, scale = 2)
     BigDecimal totalScore;
 
-    String letter_grade;
+    String letterGrade;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     Instant createdAt;

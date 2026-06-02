@@ -21,7 +21,7 @@ import java.util.UUID;
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID id;
+    UUID subject_id;
 
     @Column(name = "subject_code", unique = true)
     String subjectCode;

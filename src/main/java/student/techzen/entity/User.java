@@ -16,9 +16,9 @@ import java.util.UUID;
 public class User {
     @Id
     UUID user_id;
-    String user_name;
+    String userName;
     String email;
-    String password_hash;
+    String passwordHash;
     String role;
     String status;
 

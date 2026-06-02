@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -20,6 +21,10 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "students")
 public class Student {
+    @Id
+    @Column(name = "person_id")
+    UUID person_id;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "person_id")
