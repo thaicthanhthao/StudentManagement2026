@@ -17,45 +17,47 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "students")
+@Table(name = "enrollments")
 public class Enrollment {
     @Id
-    UUID enrollment_id;
+    @Column(name = "id")
+    private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "person_id")
-    Person person;
+    @JoinColumn(name = "student_id")
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name = "class_id")
-    Class class_id;
+    private Class clazz;
 
     @Column(name = "enrollment_date", insertable = false, updatable = false)
-    Instant enrollmentDate;
+    private Instant enrollmentDate;
 
-    String status;
+    private String status;
 
     @Column(name = "attendance_score", precision = 5, scale = 2)
-    BigDecimal attendanceScore;
+    private BigDecimal attendanceScore;
 
     @Column(name = "assignment_score", precision = 5, scale = 2)
-    BigDecimal assignmentScore;
+    private BigDecimal assignmentScore;
 
     @Column(name = "midterm_score", precision = 5, scale = 2)
-    BigDecimal midtermScore;
+    private BigDecimal midtermScore;
 
     @Column(name = "final_exam_score", precision = 5, scale = 2)
-    BigDecimal finalExamScore;
+    private BigDecimal finalExamScore;
 
     @Column(name = "total_score", precision = 5, scale = 2)
-    BigDecimal totalScore;
+    private BigDecimal totalScore;
 
-    String letterGrade;
+    @Column(name = "letter_grade")
+    private String letterGrade;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    Instant createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
-    Instant updatedAt;
+    private Instant updatedAt;
 }
 

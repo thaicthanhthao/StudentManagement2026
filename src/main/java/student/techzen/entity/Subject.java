@@ -20,20 +20,20 @@ import java.util.UUID;
 @Table(name = "subjects")
 public class Subject {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    UUID subject_id;
+    @Column(name = "id")
+    private UUID id;
 
     @Column(name = "subject_code", unique = true)
-    String subjectCode;
+    private String subjectCode;
 
-    @Column(name = "subject_name", nullable = false)
-    String subjectName;
+    @Column(name = "subject_name")
+    private String subjectName;
 
-    Integer credits;
+    private Integer credits;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    Instant createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
-    Instant updatedAt;
+    private Instant updatedAt;
 }

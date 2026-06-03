@@ -18,23 +18,25 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "teacher")
+@Table(name = "teachers")
 public class Teacher {
     @Id
     @Column(name = "person_id")
-    UUID person_id;
+    private UUID id;
 
     @OneToOne
     @MapsId
     @JoinColumn(name = "person_id")
-    Person person;
+    private Person person;
 
-    String teacherCode;
-    String specialization;
+    @Column(name = "teacher_code", unique = true)
+    private String teacherCode;
+
+    private String specialization;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    Instant createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
-    Instant updatedAt;
+    private Instant updatedAt;
 }
