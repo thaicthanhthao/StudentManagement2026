@@ -15,16 +15,25 @@ import java.util.UUID;
 @Table(name = "users")
 public class User {
     @Id
-    UUID user_id;
-    String userName;
-    String email;
-    String passwordHash;
-    String role;
-    String status;
+    @Column(name = "id")
+    private UUID id;
+
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    private String role;
+
+    private String status;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    Instant createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
-    Instant updatedAt;
+    private Instant updatedAt;
 }

@@ -21,46 +21,47 @@ import java.util.UUID;
 @Table(name = "classes")
 public class Class {
     @Id
-    UUID class_id;
+    @Column(name = "id")
+    private UUID id;
 
     @Column(name = "class_code", unique = true)
-    String classCode;
+    private String classCode;
 
-    @Column(name = "class_name", nullable = false)
-    String className;
-
-    @ManyToOne
-    @JoinColumn(name = "subject_id", nullable = false)
-    Subject subject;
+    @Column(name = "class_name")
+    private String className;
 
     @ManyToOne
-    @JoinColumn(name = "teacher_id", referencedColumnName = "person_id", nullable = false)
-    Teacher teacher;
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
 
-    String semester;
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
+
+    private String semester;
 
     @Column(name = "academic_year")
-    String academicYear;
+    private String academicYear;
 
-    String room;
+    private String room;
 
     @Column(name = "day_of_week")
-    Integer dayOfWeek;
+    private Integer dayOfWeek;
 
     @Column(name = "start_time")
-    LocalTime startTime;
+    private LocalTime startTime;
 
     @Column(name = "end_time")
-    LocalTime endTime;
+    private LocalTime endTime;
 
     @Column(name = "max_students")
-    Integer maxStudents;
+    private Integer maxStudents;
 
-    String status;
+    private String status;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    Instant createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
-    Instant updatedAt;
+    private Instant updatedAt;
 }

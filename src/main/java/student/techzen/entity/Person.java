@@ -14,21 +14,28 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Person {
     @Id
-    UUID person_id;
-    String fullName;
-    LocalDate dob;
-    String gender;
-    String phone;
-    String address;
+    @Column(name = "id")
+    private UUID id;
+
+    @Column(name = "full_name")
+    private String fullName;
+
+    private LocalDate dob;
+
+    private String gender;
+
+    private String phone;
+
+    private String address;
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    Instant createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
-    Instant updatedAt;
+    private Instant updatedAt;
 
 }
