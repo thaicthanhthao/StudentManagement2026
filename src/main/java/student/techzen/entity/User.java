@@ -2,7 +2,6 @@ package student.techzen.entity;
 
 import lombok.*;
 import jakarta.persistence.*;
-import org.springframework.web.bind.annotation.Mapping;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -16,6 +15,7 @@ import java.util.UUID;
 public class User {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "username", nullable = false, unique = true)
