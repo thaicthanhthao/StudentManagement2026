@@ -22,21 +22,22 @@ import java.util.UUID;
 public class Teacher {
     @Id
     @Column(name = "person_id")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    UUID person_id;
 
     @OneToOne
     @MapsId
     @JoinColumn(name = "person_id")
-    private Person person;
+    Person person;
 
     @Column(name = "teacher_code", unique = true)
-    private String teacherCode;
+    String teacherCode;
 
-    private String specialization;
+    String specialization;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    private Instant createdAt;
+    Instant createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
-    private Instant updatedAt;
+    Instant updatedAt;
 }
