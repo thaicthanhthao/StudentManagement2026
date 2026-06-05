@@ -114,7 +114,7 @@ public class MajorService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Major not found: " + id));
 
-        boolean hasStudents = studentRepository.existsByMajorId(id);
+        boolean hasStudents = majorRepository.existsById(id);
 
         if (hasStudents) {
             throw new ResponseStatusException(
