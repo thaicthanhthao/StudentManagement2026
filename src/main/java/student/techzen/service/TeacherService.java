@@ -7,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import student.techzen.dto.PageResponse;
 import student.techzen.dto.teacher.TeacherCreateRequest;
 import student.techzen.dto.teacher.TeacherDetailResponse;
@@ -16,9 +15,9 @@ import student.techzen.dto.teacher.TeacherReponse;
 import student.techzen.entity.Person;
 import student.techzen.entity.Teacher;
 import student.techzen.entity.User;
-import student.techzen.repositoty.PersonRepository;
-import student.techzen.repositoty.TeacherRepository;
-import student.techzen.repositoty.UserRepository;
+import student.techzen.repository.PersonRepository;
+import student.techzen.repository.TeacherRepository;
+import student.techzen.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
