@@ -20,7 +20,7 @@ public class PageResponse<T> {
     public PageResponse(Page<T> pageData) {
         this.item = pageData.getContent();
         this.totalPages = pageData.getTotalPages();
-        this.totalItems = pageData.getTotalPages();
+        this.totalItems = pageData.getTotalElements();
         this.size = pageData.getSize();
         this.page = pageData.getNumber();
     }
