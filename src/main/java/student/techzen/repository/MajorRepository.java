@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface MajorRepository extends JpaRepository<Major, UUID> {
     Optional<Major> findByMajorCode(String majorCode);
+    boolean existsById(UUID id);
+
 }

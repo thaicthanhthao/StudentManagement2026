@@ -8,49 +8,16 @@ import student.techzen.dto.student.*;
 import java.util.UUID;
 
 public interface StudentService {
-//    PageResponse<StudentListItemResponse>
-//    getAllStudents(Pageable pageable);
-//
-//    StudentDetailResponse
-//    getStudentById(UUID id);
-//
-//    StudentDetailResponse
-//    createStudent(StudentCreateRequest request);
-//
-//    StudentDetailResponse
-//    updateStudent(
-//            UUID id,
-//            StudentUpdateRequest request
-//    );
-//
-//    void deleteStudent(UUID id);
-//
-//    PageResponse<StudentListItemResponse>
-//    searchStudents(
-//            String keyword,
-//            Pageable pageable
-//    );
+    PageResponse<StudentListItemResponse> getAllStudents(Pageable pageable);
 
-    PageResponse<StudentResponse>
-    getAllStudents(Pageable pageable);
+    StudentDetailResponse getStudentById(UUID id);
 
-    StudentResponse
-    getStudentById(UUID id);
+    StudentDetailResponse createStudent(StudentCreateRequest request);
 
-    StudentResponse
-    createStudent(StudentCreateRequest request);
-
-    StudentResponse
-    updateStudent(
-            UUID id,
-            StudentUpdateRequest request
-    );
+    StudentDetailResponse updateStudent(UUID id, StudentUpdateRequest request);
 
     void deleteStudent(UUID id);
 
-    PageResponse<StudentResponse>
-    searchStudents(
-            String keyword,
-            Pageable pageable
+    PageResponse<StudentListItemResponse> searchStudents(String keyword, Pageable pageable
     );
 }
