@@ -1,8 +1,6 @@
 package student.techzen.dto.major;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
@@ -11,4 +9,13 @@ import lombok.NoArgsConstructor;
 public class MajorCreateRequest {
     String code;
     String name;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class MajorMessageResponse {
+        String message;
+    }
 }

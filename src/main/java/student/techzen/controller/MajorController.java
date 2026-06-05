@@ -6,14 +6,14 @@ import lombok.experimental.FieldDefaults;
 import lombok.AccessLevel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import student.techzen.dto.ApiResponse;
 import student.techzen.dto.major.MajorCreateRequest;
 import student.techzen.dto.major.MajorDetailResponse;
 import student.techzen.dto.major.MajorListItemResponse;
 import student.techzen.dto.major.MajorUpdateRequest;
 import student.techzen.service.MajorService;
+import student.techzen.dto.major.MajorResponse;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,17 +26,26 @@ public class MajorController {
     MajorService majorService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<MajorDetailResponse> getDetail(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<MajorDetailResponse>> getDetail(@PathVariable UUID id) {
         MajorDetailResponse response = majorService.getDetail(id);
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(ApiResponse.<MajorDetailResponse>builder()
+                .success(true)
+                .data(response)
+                .build());
     }
 
     @GetMapping("/by-major-code")
-    public ResponseEntity<MajorDetailResponse> getByCode(@RequestParam String code) {
+    public ResponseEntity<ApiResponse<MajorDetailResponse>> getByCode(@RequestParam String code) {
         MajorDetailResponse response = majorService.getMajorByCode(code);
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(ApiResponse.<MajorDetailResponse>builder()
+                .success(true)
+                .data(response)
+                .build());
     }
 
+    // dùng để lấy hàng loạt (bulk) thông tin rút gọn của các Chuyên ngành (Major) cùng một lúc dựa trên một danh sách các ID được truyền lên
     @PostMapping("/bulk-by-ids")
     public ResponseEntity<List<MajorListItemResponse>> getBulkByIds(@RequestBody List<UUID> ids) {
         List<MajorListItemResponse> response = majorService.getMajorsBulkByIds(ids);
@@ -44,32 +53,37 @@ public class MajorController {
     }
 
     @PostMapping
-    public ResponseEntity<MajorDetailResponse> create(@Valid @RequestBody MajorCreateRequest request) {
+    public ResponseEntity<ApiResponse<MajorResponse>> createMajor(@Valid @RequestBody MajorCreateRequest majorCreateRequest) {
 
-        MajorDetailResponse response = majorService.createMajor(request);
+        MajorResponse majorResponse = majorService.createMajor(majorCreateRequest);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).body(response);
+        return ResponseEntity.status(201).body(ApiResponse.<MajorResponse>builder()
+                .success(true)
+                .data(majorResponse)
+                .build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MajorDetailResponse> update(
+    public ResponseEntity<ApiResponse<MajorResponse>> updateMajor(
             @PathVariable UUID id,
-            @Valid @RequestBody MajorUpdateRequest request) {
+            @Valid @RequestBody MajorUpdateRequest majorUpdateRequest) {
 
-        MajorDetailResponse response = majorService.updateMajor(id, request);
+        MajorResponse majorResponse = majorService.updateMajor(id, majorUpdateRequest);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.<MajorResponse>builder()
+                .success(true)
+                .data(majorResponse)
+                .build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMajor(@PathVariable UUID id) {
         majorService.deleteMajor(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.<MajorCreateRequest.MajorMessageResponse>builder()
+                .success(true)
+                .data(MajorCreateRequest.MajorMessageResponse.builder()
+                        .message("Delete major success")
+                        .build())
+                .build());
     }
 }
