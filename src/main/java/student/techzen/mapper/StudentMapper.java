@@ -3,7 +3,6 @@ package student.techzen.mapper;
 import org.springframework.stereotype.Component;
 import student.techzen.dto.student.StudentDetailResponse;
 import student.techzen.dto.student.StudentListItemResponse;
-import student.techzen.dto.student.StudentResponse;
 import student.techzen.entity.Student;
 
 @Component
@@ -33,20 +32,6 @@ public class StudentMapper {
                 .enrollmentYear(student.getEnrollmentYear())
                 .majorId(student.getMajor().getId())
                 .majorName(student.getMajor().getMajorName())
-                .currentGpa(student.getCurrentGpa())
-                .createdAt(student.getCreatedAt())
-                .updatedAt(student.getUpdatedAt())
-                .build();
-    }
-
-    public StudentResponse toResponse(
-            Student student
-    ) {
-
-        return StudentResponse.builder()
-                .personId(student.getPerson_id())
-                .studentCode(student.getStudentCode())
-                .enrollmentYear(student.getEnrollmentYear())
                 .currentGpa(student.getCurrentGpa())
                 .createdAt(student.getCreatedAt())
                 .updatedAt(student.getUpdatedAt())
