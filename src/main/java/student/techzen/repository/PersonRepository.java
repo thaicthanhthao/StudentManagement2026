@@ -1,4 +1,4 @@
-package student.techzen.repositoty;
+package student.techzen.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import student.techzen.entity.Person;

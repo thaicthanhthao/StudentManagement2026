@@ -1,4 +1,4 @@
-package student.techzen.repositoty;
+package student.techzen.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import student.techzen.dto.teacher.TeacherProjectorNative;
 import student.techzen.entity.Teacher;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
@@ -27,5 +28,14 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     Page<TeacherProjectorNative> getByAllNative(Pageable pageable,
                                                 @Param("fullName") String fullName,
                                                 @Param("teacherCode") String teacherCode);
+
+    @Query("""
+       SELECT t
+       FROM Teacher t
+       JOIN FETCH t.person p
+       JOIN FETCH p.user
+       WHERE t.id = :id
+       """)
+    Optional<Teacher> findDetailById(UUID id);
 
 }
