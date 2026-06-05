@@ -7,12 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
+import student.techzen.dto.ApiResponse;
 import student.techzen.dto.PageResponse;
 import student.techzen.dto.student.*;
+import student.techzen.entity.Major;
 import student.techzen.entity.Person;
 import student.techzen.entity.Student;
 import student.techzen.mapper.StudentMapper;
+import student.techzen.repository.MajorRepository;
+import student.techzen.repository.PersonRepository;
 import student.techzen.repository.StudentRepository;
 
 import java.util.UUID;
@@ -22,179 +28,98 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepo;
     private final StudentMapper studentMapper;
-
-//    @Override
-//    public PageResponse<StudentListItemResponse> getAllStudents(Pageable pageable) {
-//        Page<Student> pageData = studentRepo.findAll(pageable);
-//
-//        return new PageResponse<>(pageData.map(studentMapper::toListItemResponse));
-//    }
-//
-//    @Override
-//    public StudentDetailResponse getStudentById(UUID id) {
-//        Student student = studentRepo.findById(id).orElseThrow(() -> new ResponseStatusException(
-//                                        HttpStatus.NOT_FOUND,
-//                                        "Student not found"
-//                                ));
-//
-//        return studentMapper.toDetailResponse(
-//                student
-//        );
-//    }
-//
-//    @Override
-//    public StudentDetailResponse createStudent(StudentCreateRequest request) {
-//        return null;
-//    }
-//
-//
-//    @Override
-//    public StudentDetailResponse updateStudent(UUID id, StudentUpdateRequest request) {
-//        return null;
-//    }
-//
-//    @Override
-//    public void deleteStudent(UUID id) {
-//        Student student = studentRepo.findById(id).orElseThrow(() -> new ResponseStatusException(
-//                                        HttpStatus.NOT_FOUND,
-//                                        "Student not found"
-//        ));
-//
-//        studentRepo.delete(student);
-//    }
-//
-//    @Override
-//    public PageResponse<StudentListItemResponse> searchStudents(String keyword, Pageable pageable) {
-//        return null;
-//    }
+    private final MajorRepository majorRepo;
+    private final PersonRepository personRepo;
 
     @Override
-    public PageResponse<StudentResponse>
-    getAllStudents(Pageable pageable) {
+    public PageResponse<StudentListItemResponse> getAllStudents(Pageable pageable) {
 
-        Page<Student> pageData =
-                studentRepo.findAll(pageable);
+        Page<Student> pageData = studentRepo.findAll(pageable);
 
-        return new PageResponse<>(
-                pageData.map(
-                        studentMapper::toResponse
-                )
+        return new PageResponse<>(pageData.map(studentMapper::toListItemResponse)
         );
     }
 
     @Override
-    public StudentResponse getStudentById(
-            UUID id
-    ) {
-
-        Student student =
-                studentRepo.findById(id)
-                        .orElseThrow(() ->
-                                new ResponseStatusException(
+    public StudentDetailResponse getStudentById(UUID id) {
+        Student student = studentRepo.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
                                         HttpStatus.NOT_FOUND,
-                                        "Student not found"
-                                ));
+                                        "Student not found"));
 
-        return studentMapper.toResponse(student);
+        return studentMapper.toDetailResponse(student);
     }
 
     @Override
-    public StudentResponse createStudent(
+    public StudentDetailResponse
+    createStudent(
             StudentCreateRequest request
     ) {
 
-        if (studentRepo.existsByStudentCode(
-                request.getStudentCode())) {
+        Person person =
+                personRepo.findById(request.getPersonId())
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Person not found"));
 
+        Major major = majorRepo.findById(request.getMajorId())
+                .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Major not found"));
+
+        Student student = Student.builder()
+                        .person(person)
+                        .major(major)
+                        .studentCode(request.getStudentCode())
+                        .enrollmentYear(request.getEnrollmentYear())
+                        .currentGpa(request.getCurrentGpa())
+                        .build();
+
+        return studentMapper.toDetailResponse(studentRepo.save(student));
+    }
+
+    @Override
+    public StudentDetailResponse updateStudent(UUID id, StudentUpdateRequest request) {
+
+        Student student = studentRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                                        HttpStatus.NOT_FOUND,
+                                        "Student not found"));
+
+        Major major = majorRepo.findById(request.getMajorId())
+                .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Major not found"));
+
+        student.setStudentCode(request.getStudentCode());
+
+        student.setEnrollmentYear(request.getEnrollmentYear());
+
+        student.setCurrentGpa(request.getCurrentGpa());
+
+        student.setMajor(major);
+
+        return studentMapper.toDetailResponse(studentRepo.save(student));
+    }
+
+    @Override
+    public void deleteStudent(UUID id) {
+        if (!studentRepo.existsById(id)) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Student code already exists"
+                    HttpStatus.NOT_FOUND,
+                    "Student not found"
             );
         }
 
-        Student student =
-                Student.builder()
-                        .studentCode(
-                                request.getStudentCode()
-                        )
-                        .enrollmentYear(
-                                request.getEnrollmentYear()
-                        )
-                        .currentGpa(
-                                request.getCurrentGpa()
-                        )
-                        .build();
-
-        return studentMapper.toResponse(
-                studentRepo.save(student)
-        );
+        studentRepo.deleteById(id);
     }
 
     @Override
-    public StudentResponse updateStudent(
-            UUID id,
-            StudentUpdateRequest request
-    ) {
+    public PageResponse<StudentListItemResponse> searchStudents(String keyword, Pageable pageable) {
 
-        Student student =
-                studentRepo.findById(id)
-                        .orElseThrow(() ->
-                                new ResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Student not found"
-                                ));
+        Page<Student> pageData = studentRepo.searchByStudentCode(keyword, pageable);
 
-        student.setStudentCode(
-                request.getStudentCode()
-        );
-
-        student.setEnrollmentYear(
-                request.getEnrollmentYear()
-        );
-
-        student.setCurrentGpa(
-                request.getCurrentGpa()
-        );
-
-        return studentMapper.toResponse(
-                studentRepo.save(student)
-        );
+        return new PageResponse<>(pageData.map(studentMapper::toListItemResponse));
     }
 
-    @Override
-    public void deleteStudent(
-            UUID id
-    ) {
-
-        Student student =
-                studentRepo.findById(id)
-                        .orElseThrow(() ->
-                                new ResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Student not found"
-                                ));
-
-        studentRepo.delete(student);
-    }
-
-    @Override
-    public PageResponse<StudentResponse>
-    searchStudents(
-            String keyword,
-            Pageable pageable
-    ) {
-
-        Page<Student> pageData =
-                studentRepo
-                        .searchByStudentCode(
-                                keyword,
-                                pageable
-                        );
-
-        return new PageResponse<>(
-                pageData.map(
-                        studentMapper::toResponse
-                )
-        );
-    }
 }
