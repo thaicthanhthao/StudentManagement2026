@@ -6,18 +6,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import student.techzen.dto.PageResponse;
-import student.techzen.dto.teacher.TeacherCreateRequest;
-import student.techzen.dto.teacher.TeacherDetailResponse;
-import student.techzen.dto.teacher.TeacherProjectorNative;
-import student.techzen.dto.teacher.TeacherReponse;
+import student.techzen.dto.teacher.*;
 import student.techzen.entity.Person;
 import student.techzen.entity.Teacher;
 import student.techzen.entity.User;
 import student.techzen.repository.PersonRepository;
 import student.techzen.repository.TeacherRepository;
 import student.techzen.repository.UserRepository;
+import student.techzen.mapper.Teachermapper;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class TeacherService {
     TeacherRepository teacherRepository;
     UserRepository userRepository;
     PersonRepository personRepository;
+    Teachermapper teacherMapper;
 
     @Transactional
     public TeacherReponse createTeacher(TeacherCreateRequest request){
@@ -87,5 +91,54 @@ public class TeacherService {
         );
 
         return new PageResponse<>(responses);
+    }
+
+    public TeacherDetailResponse getById(UUID id){
+        Teacher teacher = teacherRepository.findDetailById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher not found: " + id));
+
+        return teacherMapper.mapToTeacherDetailResponse(teacher);
+    }
+
+    @Transactional
+    public TeacherDetailResponse updateTeacher(UUID id, TeacherUpdateRequest updateRequest) {
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher not found: " + id));
+
+        Person person = teacher.getPerson();
+        User user = person.getUser();
+
+        person.setFullName(updateRequest.getFullName());
+        person.setPhone(updateRequest.getPhone());
+        person.setAddress(updateRequest.getAddress());
+        user.setEmail(updateRequest.getEmail());
+        teacher.setTeacherCode(updateRequest.getTeacherCode());
+        teacher.setSpecialization(updateRequest.getSpecialization());
+
+        userRepository.save(user);
+        personRepository.save(person);
+        teacherRepository.save(teacher);
+
+        return teacherMapper.mapToTeacherDetailResponse(teacher);
+    }
+
+    public void  deleteTeacher(UUID id){
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher not found: " + id));
+
+        Person person = teacher.getPerson();
+        User user = person.getUser();
+
+
+        teacherRepository.delete(teacher);
+        personRepository.delete(person);
+        userRepository.delete(user);
+
     }
 }
