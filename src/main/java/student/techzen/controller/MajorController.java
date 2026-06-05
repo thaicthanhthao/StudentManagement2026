@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.techzen.dto.ApiResponse;
+import student.techzen.dto.PageResponse;
 import student.techzen.dto.major.MajorCreateRequest;
 import student.techzen.dto.major.MajorDetailResponse;
 import student.techzen.dto.major.MajorListItemResponse;
@@ -14,6 +15,7 @@ import student.techzen.dto.major.MajorUpdateRequest;
 import student.techzen.service.MajorService;
 import student.techzen.dto.major.MajorResponse;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +26,20 @@ import java.util.UUID;
 public class MajorController {
 
     MajorService majorService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<PageResponse<MajorListItemResponse>>> getAllMajors(
+            @org.springdoc.core.annotations.ParameterObject @org.springframework.data.web.PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String code
+    ) {
+        PageResponse<MajorListItemResponse> response = majorService.getAll(pageable, name, code);
+
+        return ResponseEntity.ok(ApiResponse.<PageResponse<MajorListItemResponse>>builder()
+                .success(true)
+                .data(response)
+                .build());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MajorDetailResponse>> getDetail(@PathVariable UUID id) {

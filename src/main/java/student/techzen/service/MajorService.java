@@ -4,10 +4,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.AccessLevel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import student.techzen.dto.PageResponse;
 import student.techzen.dto.major.*;
+import student.techzen.dto.teacher.TeacherDetailResponse;
+import student.techzen.dto.teacher.TeacherProjectorNative;
 import student.techzen.entity.Major;
 import student.techzen.repository.MajorRepository;
 import student.techzen.repository.StudentRepository;
@@ -23,6 +28,24 @@ public class MajorService {
 
     MajorRepository majorRepository;
     StudentRepository studentRepository;
+
+    public PageResponse<MajorListItemResponse> getAll(Pageable pageable,
+                                                        String fullName,
+                                                        String majorCode
+    ){
+        Page<MajorProjectorNative> projectorPage = majorRepository.getByAllNative(pageable, fullName, majorCode);
+
+        Page<MajorListItemResponse> responses = projectorPage.map(data ->
+                MajorListItemResponse.builder()
+                        .id(data.getId())
+                        .name(data.getName())
+                        .code(data.getCode())
+                        .build()
+        );
+
+        return new PageResponse<>(responses);
+    }
+
     public MajorDetailResponse getDetail(UUID id) {
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
