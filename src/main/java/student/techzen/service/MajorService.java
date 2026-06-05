@@ -4,13 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.AccessLevel;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import student.techzen.dto.major.MajorCreateRequest;
-import student.techzen.dto.major.MajorDetailResponse;
-import student.techzen.dto.major.MajorListItemResponse;
-import student.techzen.dto.major.MajorUpdateRequest;
+import org.springframework.web.server.ResponseStatusException;
+import student.techzen.dto.major.*;
 import student.techzen.entity.Major;
 import student.techzen.repository.MajorRepository;
+import student.techzen.repository.StudentRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
 public class MajorService {
 
     MajorRepository majorRepository;
-
+    StudentRepository studentRepository;
     public MajorDetailResponse getDetail(UUID id) {
         Major major = majorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Major not found with ID: " + id));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Major not found: " + id));
 
         return MajorDetailResponse.builder()
                 .id(major.getId())
@@ -38,7 +40,9 @@ public class MajorService {
 
     public MajorDetailResponse getMajorByCode(String code) {
         Major major = majorRepository.findByMajorCode(code)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyên ngành với mã: " + code));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Major not found: " + code));
 
         return MajorDetailResponse.builder()
                 .id(major.getId())
@@ -62,7 +66,7 @@ public class MajorService {
     }
 
     @Transactional
-    public MajorDetailResponse createMajor(MajorCreateRequest request) {
+    public MajorResponse createMajor(MajorCreateRequest request) {
         Major major = Major.builder()
                 .id(UUID.randomUUID())
                 .majorName(request.getName())
@@ -71,29 +75,31 @@ public class MajorService {
 
         major = majorRepository.save(major);
 
-        return MajorDetailResponse.builder()
+        return MajorResponse.builder()
                 .id(major.getId())
-                .name(major.getMajorName())
-                .code(major.getMajorCode())
+                .majorName(major.getMajorName())
+                .majorCode(major.getMajorCode())
                 .createdAt(major.getCreatedAt())
                 .updatedAt(major.getUpdatedAt())
                 .build();
     }
 
     @Transactional
-    public MajorDetailResponse updateMajor(UUID id, MajorUpdateRequest request) {
+    public MajorResponse updateMajor(UUID id, MajorUpdateRequest majorUpdateRequest) {
         Major major = majorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyên ngành với ID: " + id));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Major not found: " + id));
 
-        major.setMajorName(request.getName());
-        major.setMajorCode(request.getCode());
+        major.setMajorName(majorUpdateRequest.getName());
+        major.setMajorCode(majorUpdateRequest.getCode());
 
         major = majorRepository.save(major);
 
-        return MajorDetailResponse.builder()
+        return MajorResponse.builder()
                 .id(major.getId())
-                .name(major.getMajorName())
-                .code(major.getMajorCode())
+                .majorName(major.getMajorName())
+                .majorCode(major.getMajorCode())
                 .createdAt(major.getCreatedAt())
                 .updatedAt(major.getUpdatedAt())
                 .build();
@@ -101,14 +107,18 @@ public class MajorService {
 
     @Transactional
     public void deleteMajor(UUID id) {
-        if (!majorRepository.existsById(id)) {
-            throw new RuntimeException("Không tìm thấy chuyên ngành với ID: " + id);
+        Major major = majorRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Major not found: " + id));
+
+        boolean hasStudents = studentRepository.existsByMajorId(id);
+
+        if (hasStudents) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Cannot be deleted! There are currently students enrolled in this major.");
         }
 
-        try {
-            majorRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Không thể xóa chuyên ngành này vì đang có sinh viên thuộc ngành này!");
-        }
+        majorRepository.delete(major);
     }
 }
