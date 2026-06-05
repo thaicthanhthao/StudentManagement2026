@@ -36,6 +36,9 @@ public class MajorService {
                 .build();
     }
 
+
+
+
     public MajorDetailResponse getMajorByCode(String code) {
         Major major = majorRepository.findByMajorCode(code)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyên ngành với mã: " + code));
