@@ -38,4 +38,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
        """)
     Optional<Teacher> findDetailById(UUID id);
 
+    boolean existsByPersonId(UUID id);
+
 }
