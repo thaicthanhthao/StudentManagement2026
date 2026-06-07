@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PersonController {
 
-    private final PersonService personService;
+        private final PersonService personService;
 
     @GetMapping
     public ApiResponse<PageResponse<PersonListItemResponse>> getAllPersons(Pageable pageable) {
@@ -74,4 +74,5 @@ public class PersonController {
                 .data(personService.searchPersons(keyword, pageable))
                 .build();
     }
+
 }

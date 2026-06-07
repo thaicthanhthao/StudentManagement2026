@@ -19,4 +19,5 @@ public interface PersonService {
     void deletePerson(UUID id);
 
     PageResponse<PersonListItemResponse> searchPersons(String keyword, Pageable pageable);
+
 }

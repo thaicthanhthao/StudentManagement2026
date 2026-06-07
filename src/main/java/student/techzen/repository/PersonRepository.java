@@ -27,5 +27,4 @@ public interface PersonRepository extends JpaRepository<Person, UUID> {
             nativeQuery = true
     )
     Page<Person> searchByFullName(@Param("keyword") String keyword, Pageable pageable);
-
 }

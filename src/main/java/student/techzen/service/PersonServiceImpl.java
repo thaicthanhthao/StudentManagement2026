@@ -15,15 +15,20 @@ import student.techzen.entity.Person;
 import student.techzen.entity.User;
 import student.techzen.mapper.PersonMapper;
 import student.techzen.repository.PersonRepository;
+import student.techzen.repository.StudentRepository;
+import student.techzen.repository.TeacherRepository;
 import student.techzen.repository.UserRepository;
 
 import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepo;
     private final UserRepository userRepo;
     private final PersonMapper personMapper;
+    private final StudentRepository studentRepo;
+    private final TeacherRepository teacherRepo;
 
     @Override
     public PageResponse<PersonListItemResponse> getAllPersons(Pageable pageable) {
@@ -92,15 +97,15 @@ public class PersonServiceImpl implements PersonService {
             person.setUser(user);
         }
 
-            person.setFullName(request.getFullName());
+        person.setFullName(request.getFullName());
 
-            person.setDob(request.getDob());
+        person.setDob(request.getDob());
 
-            person.setGender(request.getGender());
+        person.setGender(request.getGender());
 
-            person.setPhone(request.getPhone());
+        person.setPhone(request.getPhone());
 
-            person.setAddress(request.getAddress());
+        person.setAddress(request.getAddress());
 
         person = personRepo.save(person);
 
@@ -124,6 +129,20 @@ public class PersonServiceImpl implements PersonService {
                                 HttpStatus.NOT_FOUND,
                                 "Person not found"
                         ));
+
+        if (studentRepo.existsByPersonId(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Person is assigned to a student"
+            );
+        }
+
+        if (teacherRepo.existsByPersonId(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Person is assigned to a teacher"
+            );
+        }
 
         personRepo.delete(person);
     }
