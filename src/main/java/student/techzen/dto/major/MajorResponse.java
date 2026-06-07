@@ -1,28 +1,20 @@
-package student.techzen.dto.student;
+package student.techzen.dto.major;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class StudentResponse {
-
-    UUID personId;
-
-    String studentCode;
-
-    Integer enrollmentYear;
-
-    BigDecimal currentGpa;
-
+public class MajorResponse {
+    UUID id;
+    String majorName;;
+    String majorCode;
     Instant createdAt;
-
     Instant updatedAt;
 }

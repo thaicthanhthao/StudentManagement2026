@@ -22,4 +22,6 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
     );
 
     boolean existsByStudentCode(String studentCode);
+    boolean existsByPersonId(UUID id);
+
 }

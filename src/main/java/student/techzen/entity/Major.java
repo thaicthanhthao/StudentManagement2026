@@ -20,21 +20,20 @@ import java.util.UUID;
 @Table(name = "majors")
 public class Major {
     @Id
-    @Column(name = "id")
-    private UUID id;
+    UUID id;
 
-    @Column(name = "major_code", unique = true)
-    private String majorCode;
+    @Column(name = "major_code")
+    String majorCode;
 
     @Column(name = "major_name")
-    private String majorName;
+    String majorName;
 
     @OneToMany(mappedBy = "major")
-    private List<Student> students;
+    List<Student> students;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    private Instant createdAt;
+    Instant createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
-    private Instant updatedAt;
+    Instant updatedAt;
 }
