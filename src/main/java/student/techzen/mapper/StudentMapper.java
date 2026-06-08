@@ -14,7 +14,7 @@ public class StudentMapper {
     ) {
 
         return StudentListItemResponse.builder()
-                .personId(student.getId())
+                .personId(student.getPerson().getId())
                 .studentCode(student.getStudentCode())
                 .fullName(student.getPerson().getFullName())
                 .majorName(student.getMajor().getMajorName())
@@ -27,7 +27,7 @@ public class StudentMapper {
     ) {
 
         return StudentDetailResponse.builder()
-                .personId(student.getId())
+                .personId(student.getPerson().getId())
                 .studentCode(student.getStudentCode())
                 .fullName(student.getPerson().getFullName())
                 .enrollmentYear(student.getEnrollmentYear())
@@ -44,7 +44,7 @@ public class StudentMapper {
     ) {
 
         return StudentResponse.builder()
-                .personId(student.getId())
+                .personId(student.getPerson().getId())
                 .studentCode(student.getStudentCode())
                 .enrollmentYear(student.getEnrollmentYear())
                 .currentGpa(student.getCurrentGpa())
