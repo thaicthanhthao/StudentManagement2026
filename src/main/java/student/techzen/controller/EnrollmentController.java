@@ -1,5 +1,6 @@
 package student.techzen.controller;
 
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -9,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import student.techzen.dto.ApiResponse;
 import student.techzen.dto.PageResponse;
-import student.techzen.dto.enrollment.EnrollmentSummaryResponse;
+import student.techzen.dto.enrollment.*;
 import student.techzen.service.EnrollmentService;
 
 import java.math.BigDecimal;
@@ -47,4 +48,36 @@ public class EnrollmentController {
                 .data(enrollmentService.gerSearchByAll(pageable,studentCode,classCode,subjectName,fromTotalScore,toTotalScore))
                 .build());
     }
+
+    @PostMapping
+    public ResponseEntity<?> createEnrollStudent(@Valid @RequestBody EnrollmentRequest request){
+
+        EnrollmentResponse response = enrollmentService.createEnrollStudent(request);
+        return ResponseEntity.status(201).body(ApiResponse.builder()
+                        .success(true)
+                        .data(response)
+                        .build());
+    }
+
+//    PUT /api/v1/enrollments/{id}/progress-grades, nên dùng Patch
+    @PutMapping("/{id}/progress-grades")
+    public ResponseEntity<?> updateProgressGrades(@PathVariable UUID id, @Valid @RequestBody ProgressGradeRequest request){
+
+        ProgressGradeResponse response = enrollmentService.updateProgressGrade(id,request);
+        return ResponseEntity.ok(ApiResponse.builder()
+                .success(true)
+                .data(response)
+                .build());
+    }
+
+    @PutMapping("/{id}/final-exam-score")
+    public ResponseEntity<?> updateExamScore(@PathVariable UUID id, @Valid @RequestBody FinalExamScoreRequest request){
+
+        FinalExamScoreResponse response = enrollmentService.updateExamScore(id,request);
+        return ResponseEntity.ok(ApiResponse.builder()
+                .success(true)
+                .data(response)
+                .build());
+    }
+
 }

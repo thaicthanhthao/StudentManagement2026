@@ -19,7 +19,7 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "classes")
-public class Class {
+public class Clazz {
     @Id
     @Column(name = "id")
     private UUID id;
