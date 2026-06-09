@@ -21,6 +21,7 @@ import java.util.UUID;
 public class Enrollment {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
@@ -29,9 +30,9 @@ public class Enrollment {
 
     @ManyToOne
     @JoinColumn(name = "class_id")
-    private Class clazz;
+    private Clazz clazz;
 
-    @Column(name = "enrollment_date", insertable = false, updatable = false)
+    @Column(name = "enrollment_date")
     private Instant enrollmentDate;
 
     private String status;

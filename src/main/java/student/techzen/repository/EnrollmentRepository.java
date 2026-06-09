@@ -182,4 +182,10 @@ public interface EnrollmentRepository  extends JpaRepository<Enrollment, UUID> {
             @Param("fromTotalScore") BigDecimal fromTotalScore,
             @Param("toTotalScore") BigDecimal  toTotalScore
     );
+
+    //Kiểm tra sinh viên đã đăng ký lớp này chưa
+    boolean existsByStudentPersonIdAndClazzId(UUID studentId, UUID clazzId);
+
+    //Đếm số lượng sinh viên hiện tại đã đăng ký vào lớp này
+    long countByClazzId(UUID clazzId);
 }
