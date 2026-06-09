@@ -21,6 +21,7 @@ import java.util.UUID;
 @Table(name = "classes")
 public class Class {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
